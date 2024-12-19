@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="en" dir="ltr">
 <head>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <!-- META DATA -->
     <meta charset="UTF-8">
     <meta name='viewport' content='width=device-width, initial-scale=1.0, user-scalable=0'>
@@ -38,12 +40,14 @@
             <!-- /app-Header -->
             <!--APP-SIDEBAR-->
             @include('include.sidebar')
+
             <!--/APP-SIDEBAR-->
             <!--app-content open-->
             @yield('content')
             <!--app-content close-->
         </div>
         <!-- Sidebar-right -->
+
         <div class="sidebar sidebar-right sidebar-animate">
             <div class="panel panel-primary card mb-0 shadow-none border-0">
                 <div class="tab-menu-heading border-0 d-flex p-3">
@@ -645,9 +649,20 @@
     <!-- INTERNAL SELECT2 JS -->
     <script src="{{ asset('assets/plugins/select2/select2.full.min.js') }}"></script>
     <!-- INTERNAL Data tables js-->
+    <!-- DATA TABLE JS-->
     <script src="{{ asset('assets/plugins/datatable/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/js/dataTables.bootstrap5.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/buttons.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/jszip.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/pdfmake/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/pdfmake/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/js/buttons.colVis.min.js') }}"></script>
     <script src="{{ asset('assets/plugins/datatable/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('assets/plugins/datatable/responsive.bootstrap5.min.js') }}"></script>
+    <script src="{{ asset('assets/js/table-data.js') }}"></script>
     <!-- INTERNAL APEXCHART JS -->
     <script src="{{ asset('assets/js/apexcharts.js') }}"></script>
     <script src="{{ asset('assets/plugins/apexchart/irregular-data-series.js') }}"></script>
@@ -674,5 +689,50 @@
     <script src="{{ asset('assets/js/custom-swicher.js') }}"></script>
     <!-- Switcher js -->
     <script src="{{ asset('assets/switcher/js/switcher.js') }}"></script>
+    <!-- INTERNAL Notifications js -->
+    <script src="{{ asset('assets/plugins/notify/js/rainbow.js') }}"></script>
+    <script src="{{ asset('assets/plugins/notify/js/sample.js') }}"></script>
+    <script src="{{ asset('assets/plugins/notify/js/jquery.growl.js') }}"></script>
+    <script src="{{ asset('assets/plugins/notify/js/notifIt.js') }}"></script>
+    @if(session('success'))
+    <script>
+        let message = @json(session('success'));
+        notif({
+            msg: "<b>Success!</b> " + message,
+            type: "success",
+            position: "right"
+            });
+        </script>
+    @endif
+    @if(session('error'))
+    <script>
+        let message = @json(session('error'));
+        notif({
+            msg: "<b>Oops!</b> " + message,
+            type: "error",
+            position: "right"
+            });
+        </script>
+    @endif
+<script>
+        function Changestatus(table_name,id){
+        var csrfToken = $('meta[name="csrf-token"]').attr('content');
+        var status = $("#flexSwitchCheckDefault" + id).is(':checked') ? 1 : 2;
+        $.ajax({
+            url: "{{ route('change.status') }}",
+            type: 'post',
+            data: {
+                _token: csrfToken,
+                table_name: table_name,
+                id: id,
+                status: status
+            },
+            success: function(response) {
+                console.log(response);
+            }
+        });
+        return false;
+    }
+</script>
 </body>
 </html>
